@@ -1,7 +1,7 @@
 const path = require(`path`)
 const { createFilePath } = require(`gatsby-source-filesystem`)
 
-exports.createPages = ({ graphql, actions }) => {
+exports.createPages = ({ graphql, actions, reporter }) => {
   const { createPage } = actions
 
   return new Promise((resolve, reject) => {
@@ -15,8 +15,12 @@ exports.createPages = ({ graphql, actions }) => {
           }
         }
       }
-    `).then(result => {
+    `).then((result) => {
       result.data.allDatoCmsWork.edges.map(({ node: work }) => {
+        if (work.slug.includes(`panic`)) {
+          reporter.panic(`Oh my god how could you don't use that slug`)
+        }
+
         createPage({
           path: `works/${work.slug}`,
           component: path.resolve(`./src/templates/work.js`),
